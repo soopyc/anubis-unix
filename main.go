@@ -15,6 +15,7 @@ import (
 	"log/slog"
 	"math"
 	mrand "math/rand"
+	"net"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -29,16 +30,18 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"within.website/x"
-	"within.website/x/cmd/anubis/internal/config"
-	"within.website/x/cmd/anubis/internal/dnsbl"
+	"within.website/x/cmd/anubis-unix/internal/config"
+	"within.website/x/cmd/anubis-unix/internal/dnsbl"
 	"within.website/x/internal"
 	"within.website/x/xess"
 )
 
 var (
 	bind                = flag.String("bind", ":8923", "TCP port to bind HTTP to")
+	bindNetwork         = flag.String("bind-network", "tcp", "network mode to use, accepts [tcp, unix]")
 	challengeDifficulty = flag.Int("difficulty", 5, "difficulty of the challenge")
 	metricsBind         = flag.String("metrics-bind", ":9090", "TCP port to bind metrics to")
+	metricsBindNetwork  = flag.String("metrics-bind-network", "tcp", "network mode for the metrics server to bind to, accepts [tcp, unix]")
 	robotsTxt           = flag.Bool("serve-robots-txt", false, "serve a robots.txt file that disallows all robots")
 	policyFname         = flag.String("policy-fname", "", "full path to anubis policy document (defaults to a sensible built-in policy)")
 	target              = flag.String("target", "http://localhost:3923", "target to reverse proxy to")
@@ -99,6 +102,24 @@ func doHealthCheck() error {
 	return nil
 }
 
+func setupListener(mode string, address string) (net.Listener, string) {
+	formattedAddress := ""
+	switch mode {
+	case "unix":
+		formattedAddress = "unix:" + address
+	case "tcp":
+		formattedAddress = "http://localhost" + address
+	default:
+		formattedAddress = fmt.Sprintf(`(%s) %s`, mode, address)
+	}
+
+	listener, err := net.Listen(mode, address)
+	if err != nil {
+		log.Fatalf("failed to bind to %s", formattedAddress)
+	}
+	return listener, formattedAddress
+}
+
 func main() {
 	internal.HandleStartup()
 
@@ -141,14 +162,16 @@ func main() {
 
 	mux.HandleFunc("/", s.maybeReverseProxy)
 
-	slog.Info("listening", "url", "http://localhost"+*bind, "difficulty", *challengeDifficulty, "serveRobotsTXT", *robotsTxt, "target", *target, "version", x.Version)
-	log.Fatal(http.ListenAndServe(*bind, mux))
+	listener, url := setupListener(*bindNetwork, *bind)
+	slog.Info("listening", "url", url, "difficulty", *challengeDifficulty, "serveRobotsTXT", *robotsTxt, "target", *target, "version", x.Version)
+	log.Fatal(http.Serve(listener, mux))
 }
 
 func metricsServer() {
 	http.DefaultServeMux.Handle("/metrics", promhttp.Handler())
-	slog.Debug("listening for metrics", "url", "http://localhost"+*metricsBind)
-	log.Fatal(http.ListenAndServe(*metricsBind, nil))
+	listener, url := setupListener(*metricsBindNetwork, *metricsBind)
+	slog.Debug("listening for metrics", "url", url)
+	log.Fatal(http.Serve(listener, nil))
 }
 
 func sha256sum(text string) (string, error) {

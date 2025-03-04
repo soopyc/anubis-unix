@@ -11,7 +11,7 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
-	"within.website/x/cmd/anubis/internal/config"
+	"within.website/x/cmd/anubis-unix/internal/config"
 )
 
 var (
