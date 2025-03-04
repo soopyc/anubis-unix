@@ -12,7 +12,7 @@ buildGoModule {
 
   src = ../.;
 
-  vendorHash = "sha256-V/SrgBMZkw9lM+hCM+/5AQKZ3/iTY9kI5Lj+Ch9/Sbc=";
+  vendorHash = "sha256-DGWgD9weX/JWPPr7RDiK5J5uu81kRANfmlql4/KB9ro=";
 
   ldflags = [
     "-X within.website/x.Version=${version}"
