@@ -1,2 +1,6 @@
 *.rpm
 anubis
+
+anubis-unix
+.direnv
+/result
