@@ -18,6 +18,11 @@ buildGoModule {
     "-X within.website/x.Version=${version}"
   ];
 
+  checkFlags = [
+    # skip dnsbl test that connects to external services
+    "-skip=TestLookup"
+  ];
+
   meta = {
     description = "HTTP connection soul-weighing PoW challenge proxy - forked with ";
     homepage = "https://github.com/Xe/x/blob/master/cmd/anubis/README.md";
