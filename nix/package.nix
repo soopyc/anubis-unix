@@ -29,6 +29,6 @@ buildGoModule {
     licenses = with lib.licenses; [ cc0 ];
 
     maintainers = with lib; [ soopyc ];
-    mainProgram = "anubis";
+    mainProgram = "anubis-unix";
   };
 }
