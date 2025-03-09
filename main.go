@@ -42,6 +42,7 @@ var (
 	challengeDifficulty = flag.Int("difficulty", 5, "difficulty of the challenge")
 	metricsBind         = flag.String("metrics-bind", ":9090", "TCP port to bind metrics to")
 	metricsBindNetwork  = flag.String("metrics-bind-network", "tcp", "network mode for the metrics server to bind to, accepts [tcp, unix]")
+	socketMode          = flag.String("socket-mode", "770", "socket mode (permissions) for unix domain sockets")
 	robotsTxt           = flag.Bool("serve-robots-txt", false, "serve a robots.txt file that disallows all robots")
 	policyFname         = flag.String("policy-fname", "", "full path to anubis policy document (defaults to a sensible built-in policy)")
 	target              = flag.String("target", "http://localhost:3923", "target to reverse proxy to")
@@ -102,20 +103,34 @@ func doHealthCheck() error {
 	return nil
 }
 
-func setupListener(mode string, address string) (net.Listener, string) {
+func setupListener(network string, address string) (net.Listener, string) {
 	formattedAddress := ""
-	switch mode {
+	switch network {
 	case "unix":
 		formattedAddress = "unix:" + address
 	case "tcp":
 		formattedAddress = "http://localhost" + address
 	default:
-		formattedAddress = fmt.Sprintf(`(%s) %s`, mode, address)
+		formattedAddress = fmt.Sprintf(`(%s) %s`, network, address)
 	}
 
-	listener, err := net.Listen(mode, address)
+	listener, err := net.Listen(network, address)
 	if err != nil {
 		log.Fatalf("failed to bind to %s", formattedAddress)
+	}
+
+	// additional permission handling for unix sockets
+	if network == "unix" {
+		mode, err := strconv.ParseUint(*socketMode, 8, 0)
+		if err != nil {
+			log.Fatal(fmt.Errorf("could not parse socket mode %s: %w", *socketMode, err))
+		}
+
+		err = os.Chmod(address, os.FileMode(mode))
+		if err != nil {
+			log.Fatal(fmt.Errorf("could not change socket permission: %w", err))
+		}
+
 	}
 	return listener, formattedAddress
 }
