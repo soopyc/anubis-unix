@@ -5,12 +5,15 @@
 
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
+
+    flake-compat.url = "https://flakehub.com/f/edolstra/flake-compat/1.tar.gz";
   };
   outputs =
     {
       self,
       nixpkgs,
       treefmt-nix,
+      ...
     }:
     let
       lib = nixpkgs.lib;
@@ -25,7 +28,7 @@
 
       treefmtEval = forAllSystems (pkgs: treefmt-nix.lib.evalModule pkgs ./nix/treefmt.nix);
 
-      version = "0-unstable-2025-03-03+unix.0";
+      version = "0-unstable-2025-03-03+unix.1";
     in
     {
 
@@ -33,7 +36,6 @@
         default = pkgs.callPackage ./nix/package.nix { inherit version; };
       });
 
-      # Add dependencies that are only needed for development
       devShells = forAllSystems (pkgs: {
         default = pkgs.mkShell {
           buildInputs = with pkgs; [
