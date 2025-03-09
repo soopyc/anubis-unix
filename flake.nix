@@ -5,8 +5,6 @@
 
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
-
-    flake-compat.url = "https://flakehub.com/f/edolstra/flake-compat/1.tar.gz";
   };
   outputs =
     {
@@ -28,7 +26,7 @@
 
       treefmtEval = forAllSystems (pkgs: treefmt-nix.lib.evalModule pkgs ./nix/treefmt.nix);
 
-      version = "0-unstable-2025-03-03+unix.1";
+      version = lib.trim (builtins.readFile ./.version);
     in
     {
 
