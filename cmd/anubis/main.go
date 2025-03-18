@@ -28,17 +28,17 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/TecharoHQ/anubis"
-	"github.com/TecharoHQ/anubis/cmd/anubis/internal/config"
-	"github.com/TecharoHQ/anubis/cmd/anubis/internal/dnsbl"
-	"github.com/TecharoHQ/anubis/internal"
-	"github.com/TecharoHQ/anubis/xess"
 	"github.com/a-h/templ"
 	"github.com/facebookgo/flagenv"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/soopyc/anubis-unix"
+	"github.com/soopyc/anubis-unix/cmd/anubis/internal/config"
+	"github.com/soopyc/anubis-unix/cmd/anubis/internal/dnsbl"
+	"github.com/soopyc/anubis-unix/internal"
+	"github.com/soopyc/anubis-unix/xess"
 )
 
 var (

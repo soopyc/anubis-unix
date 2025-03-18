@@ -10,8 +10,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/TecharoHQ/anubis/internal"
 	"github.com/facebookgo/flagenv"
+	"github.com/soopyc/anubis-unix/internal"
 )
 
 var (

@@ -9,9 +9,9 @@ import (
 	"net/http"
 	"regexp"
 
-	"github.com/TecharoHQ/anubis/cmd/anubis/internal/config"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
+	"github.com/soopyc/anubis-unix/cmd/anubis/internal/config"
 )
 
 var (

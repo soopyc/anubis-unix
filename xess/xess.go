@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/TecharoHQ/anubis"
-	"github.com/TecharoHQ/anubis/internal"
+	"github.com/soopyc/anubis-unix"
+	"github.com/soopyc/anubis-unix/internal"
 )
 
 //go:generate go run github.com/a-h/templ/cmd/templ@latest generate

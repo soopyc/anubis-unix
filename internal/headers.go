@@ -3,7 +3,7 @@ package internal
 import (
 	"net/http"
 
-	"github.com/TecharoHQ/anubis"
+	"github.com/soopyc/anubis-unix"
 )
 
 // UnchangingCache sets the Cache-Control header to cache a response for 1 year if

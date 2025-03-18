@@ -9,8 +9,8 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/TecharoHQ/anubis"
-	"github.com/TecharoHQ/anubis/xess"
+	"github.com/soopyc/anubis-unix"
+	"github.com/soopyc/anubis-unix/xess"
 )
 
 func base(title string, body templ.Component) templ.Component {
