@@ -5,7 +5,7 @@ go 1.24.1
 require (
 	github.com/a-h/templ v0.3.833
 	github.com/facebookgo/flagenv v0.0.0-20160425205200-fcd59fca7456
-	github.com/golang-jwt/jwt/v5 v5.2.1
+	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/prometheus/client_golang v1.21.1
 )
 
